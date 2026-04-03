@@ -31,7 +31,6 @@ router.get(
   userController.getAll,
 );
 
-router.patch("/update", uploads.single("profilePic"))
-router.patch("/update", uploads.single("profilePic"))
+router.patch("/update", uploads.single("profilePic"));
 
 export default router;
