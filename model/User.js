@@ -28,6 +28,16 @@ const userSchema = mongoose.Schema(
       enum: ["customer", "provider", "admin", "super-admin"],
       default: "customer",
     },
+    profilePic: {
+      type: String,
+    },
+    cloudinaryId: {
+      type: String,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
     tokens: [
       {
         token: {
@@ -36,10 +46,6 @@ const userSchema = mongoose.Schema(
         },
       },
     ],
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
   },
   { timestamps: true },
 );
