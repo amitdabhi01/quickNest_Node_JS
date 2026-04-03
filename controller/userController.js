@@ -109,7 +109,7 @@ const getAll = async (req, res, next) => {
   }
 };
 
-const update = async () => {
+const update = async (req, res, next) => {
   try {
     const user = req.user;
 
@@ -147,6 +147,22 @@ const update = async () => {
   }
 };
 
+const deleteUser = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    await User.deleteOne(user);
+
+    await cloudinary.uploader.destroy(user.cloudinaryId);
+
+    res
+      .status(200)
+      .json({ success: true, message: "user delete successfully" });
+  } catch (error) {
+    next(new HttpError(error.message, 500));
+  }
+};
+
 export default {
   add,
   login,
@@ -155,4 +171,5 @@ export default {
   logOutAll,
   getAll,
   update,
+  deleteUser,
 };
