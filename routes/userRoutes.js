@@ -32,5 +32,6 @@ router.get(
 );
 
 router.patch("/update", uploads.single("profilePic"))
+router.patch("/update", uploads.single("profilePic"))
 
 export default router;
