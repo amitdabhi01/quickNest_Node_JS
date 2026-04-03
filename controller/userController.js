@@ -1,7 +1,9 @@
+import cloudinary from "../config/cloudinary.js";
 import HttpError from "../middleware/HttpError.js";
+import uploads from "../middleware/upload.js";
 import User from "../model/User.js";
 
-const addUser = async (req, res, next) => {
+const add = async (req, res, next) => {
   try {
     const { name, email, password, phone, roll } = req.body;
 
@@ -11,7 +13,11 @@ const addUser = async (req, res, next) => {
       password,
       phone,
       roll,
+      profilePic: req.file ? req.file.path : "undefined",
+      cloudinaryId: req.file ? req.file.filename : "undefined",
     };
+
+    console.log("cloudinaryId", newUser.cloudinaryId);
 
     const user = new User(newUser);
 
@@ -23,17 +29,17 @@ const addUser = async (req, res, next) => {
   }
 };
 
-const loginUser = async (req, res, next) => {
+const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
     const user = await User.findByCredentials(email, password);
 
+    const token = await user.generateAuthToken();
+
     if (!user) {
       return next(new HttpError("Unable to login ", 400));
     }
-
-    const token = await user.generateAuthToken();
 
     res
       .status(200)
@@ -63,7 +69,7 @@ const logOut = async (req, res, next) => {
       return t.token != token;
     });
 
-    req.user.save();
+    await req.user.save();
 
     res
       .status(200)
@@ -81,13 +87,13 @@ const logOutAll = async (req, res, next) => {
 
     res
       .status(200)
-      .json({ success: true, message: "User Logout from all device" });``
+      .json({ success: true, message: "User Logout from all device" });
   } catch (error) {
     next(new HttpError(error.message, 404));
   }
 };
 
-const getAllUsers = async (req, res, next) => {
+const getAll = async (req, res, next) => {
   try {
     const users = await User.find({});
 
@@ -101,36 +107,52 @@ const getAllUsers = async (req, res, next) => {
   } catch (error) {
     next(new HttpError(error.message, 404));
   }
+};
 
-  const updateUser = async (req, res, next) => {
-    try {
-      const user = req.user;
+const update = async () => {
+  try {
+    const user = req.user;
 
-      if (!user) {
-        return next(new HttpError("user not found", 404));
-      }
-
-      const update = Object.keys(req.body);
-
-      const allowedFields = ["name", "phone", "password"];
-
-      const isValid = update.every((field) => allowedFields.includes(field));
-
-      if (!isValid) {
-                       
-      }
-
-    } catch (error) {
-      next(new HttpError(error.message, 404));
+    if (!user) {
+      return next(new HttpError("user not found", 404));
     }
-  };
+
+    const updates = Object.keys(req.body);
+
+    const allowedField = ["name", "password", "phone"];
+
+    const isValid = updates.every((field) => allowedField.includes(field));
+
+    if (!isValid) {
+      return next(new HttpError("only allowed fields can be updated", 400));
+    }
+
+    uploads.forEach((update) => (user[update] = req.body[update]));
+
+    if (req.file) {
+      await cloudinary.uploader.destroy(user.cloudinaryId);
+
+      user.profilePic = req.file.path;
+
+      user.cloudinaryId = req.file.filename;
+    }
+
+    await user.save();
+
+    res
+      .status(200)
+      .json({ success: true, message: "user update successfully", user });
+  } catch (error) {
+    next(new HttpError(error.message, 404));
+  }
 };
 
 export default {
-  addUser,
-  loginUser,
+  add,
+  login,
   authLogin,
   logOut,
   logOutAll,
-  getAllUsers,
+  getAll,
+  update,
 };
