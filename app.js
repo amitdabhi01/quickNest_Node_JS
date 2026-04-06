@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import HttpError from "./middleware/HttpError.js";
 import userRoutes from "./routes/userRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 dotenv.config({ path: "./.env" });
 
@@ -12,6 +13,8 @@ const app = express();
 app.use(express.json());
 
 app.use("/user", userRoutes);
+
+app.use("/admin", adminRoutes);
 
 app.get("/", (req, res) => {
   res.status(200).json("Hello From Server");
