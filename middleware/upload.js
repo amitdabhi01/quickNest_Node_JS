@@ -1,7 +1,7 @@
 import multer from "multer";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
-
 import cloudinary from "../config/cloudinary.js";
+
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 const storage = new CloudinaryStorage({
   cloudinary,
@@ -21,6 +21,6 @@ const storage = new CloudinaryStorage({
   },
 });
 
-const uploads = multer({ storage, limits: { fieldSize: 5 * 1024 * 1024 } });
+const uploads = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } });
 
 export default uploads;

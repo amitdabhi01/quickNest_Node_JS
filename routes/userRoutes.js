@@ -13,13 +13,13 @@ import checkRole from "../middleware/checkRole.js";
 const router = express.Router();
 
 router.post(
-  "/addUser",
+  "/add",
   uploads.single("profilePic"),
   validate(createUserSchema),
   userController.add,
 );
 
-router.post("/loginUser", userController.login);
+router.post("/login", userController.login);
 
 router.get("/authLogin", auth, userController.authLogin);
 
