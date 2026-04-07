@@ -5,14 +5,14 @@ import User from "../model/User.js";
 
 const add = async (req, res, next) => {
   try {
-    const { name, email, password, phone, roll } = req.body;
+    const { name, email, password, phone, role } = req.body;
 
     const newUser = {
       name,
       email,
       password,
       phone,
-      roll,
+      role,
       profilePic: req.file ? req.file.path : "undefined",
       cloudinaryId: req.file ? req.file.filename : "undefined",
     };
@@ -65,17 +65,20 @@ const authLogin = async (req, res, next) => {
 
 const logOut = async (req, res, next) => {
   try {
+    const token = req.token; 
+
     req.user.tokens = req.user.tokens.filter((t) => {
-      return t.token != token;
+      return t.token !== token;
     });
 
     await req.user.save();
 
-    res
-      .status(200)
-      .json({ success: true, message: "User LogOut Successfully" });
+    res.status(200).json({
+      success: true,
+      message: "User LogOut Successfully",
+    });
   } catch (error) {
-    next(new HttpError(error.message, 404));
+    next(new HttpError(error.message, 500));
   }
 };
 

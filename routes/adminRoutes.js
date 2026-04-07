@@ -1,7 +1,7 @@
 import express from "express";
 
 import auth from "../middleware/auth.js";
-import checkRole from "../middleware/checkRole";
+import checkRole from "../middleware/checkRole.js";
 
 import adminController from "../controller/adminController.js";
 import categoryController from "../controller/categoryController.js";
@@ -23,7 +23,7 @@ router.delete(
 );
 
 router.post(
-  "/add",
+  "/addCategory",
   auth,
   checkRole("admin", "super_admin"),
   categoryController.add,
