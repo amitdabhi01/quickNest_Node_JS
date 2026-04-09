@@ -6,4 +6,6 @@ const serviceSchema = Joi.object({
     "string.empty": "tittle must be required",
     "string.min": "title must be grater than 2 character",
   }),
+  price: Joi.number().label("price")
 });
+

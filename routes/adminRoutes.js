@@ -13,7 +13,7 @@ import { createCategorySchema } from "../validation/categorySchema.js";
 
 const router = express.Router();
 
-// user
+// ==================== USERS ROUTES ====================
 router.patch(
   "/update/:id",
   auth,
@@ -28,7 +28,7 @@ router.delete(
   adminController.deleteUser,
 );
 
-// category
+// ==================== CATEGORIES ROUTES ====================
 router.post(
   "/addCategory",
   auth,
@@ -37,7 +37,16 @@ router.post(
   categoryController.add,
 );
 
-// service
+router.get(
+  "/allCategories",
+  auth,
+  checkRole("admin", "super_admin"),
+  categoryController.getAll,
+);
+
+
+
+// ==================== SERVICES ROUTES ====================
 router.post(
   "/addService",
   auth,
