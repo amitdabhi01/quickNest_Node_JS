@@ -44,7 +44,26 @@ router.get(
   categoryController.getAll,
 );
 
+router.get(
+  "/category/:id",
+  auth,
+  checkRole("admin", "super_admin"),
+  categoryController.getById,
+);
 
+router.patch(
+  "/category/:id",
+  auth,
+  checkRole("admin", "super_admin"),
+  categoryController.update,
+);
+
+router.delete(
+  "/category/:id",
+  auth,
+  checkRole("admin", "super_admin"),
+  categoryController.deleteCategory,
+);
 
 // ==================== SERVICES ROUTES ====================
 router.post(
