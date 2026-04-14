@@ -1,11 +1,11 @@
 import Joi from "joi";
 
 const ServiceSchema = Joi.object({
-  title: Joi.string().min(2).max(50).trim().label("Service title").messages({
-    "string.base": "Service title must be in string format",
-    "string.empty": "Service title is required",
-    "string.min": "Service title must be at least 2 characters long",
-    "string.max": "Service title must not exceed 50 characters",
+  name: Joi.string().min(2).max(50).trim().label("Service name").messages({
+    "string.base": "Service name must be in string format",
+    "string.empty": "Service name is required",
+    "string.min": "Service name must be at least 2 characters long",
+    "string.max": "Service name must not exceed 50 characters",
   }),
   description: Joi.string()
     .max(500)
@@ -41,20 +41,20 @@ const ServiceSchema = Joi.object({
 });
 
 export const createServiceSchema = ServiceSchema.fork(
-  ["title", "price", "category"],
+  ["name", "price", "category"],
   (fields) => fields.required(),
 ).messages({
   "any.required": "{#label} is required",
 });
 
 export const updateServiceSchema = ServiceSchema.fork(
-  ["title", "price", "duration", "description", "category", "isActive"],
+  ["name", "price", "duration", "description", "category", "isActive"],
   (fields) => fields.optional(),
 )
-  .or("title", "price", "duration", "description", "category", "isActive")
+  .or("name", "price", "duration", "description", "category", "isActive")
   .messages({
     "object.missing":
-      "title, price, duration, description, category or isActive any of these fields is required when updating",
+      "name, price, duration, description, category or isActive any of these fields is required when updating",
   });
 
 export default createServiceSchema;

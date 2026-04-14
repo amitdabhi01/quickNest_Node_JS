@@ -6,6 +6,12 @@ const add = async (req, res, next) => {
   try {
     const { name, description } = req.body;
 
+    const existingCategory = await Category.findOne({ name });
+
+    if (existingCategory) {
+      return next(new HttpError("category already existing", 400));
+    }
+
     const newCategory = new Category({
       name,
       description,
@@ -40,7 +46,7 @@ const getById = async (req, res, next) => {
     const { id } = req.params;
 
     // console.log("id", id);
-    
+
     const category = await Category.findById(id);
 
     if (!category) {
@@ -90,13 +96,11 @@ const update = async (req, res, next) => {
 
     await category.save();
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "category updated successfully",
-        category,
-      });
+    res.status(200).json({
+      success: true,
+      message: "category updated successfully",
+      category,
+    });
   } catch (error) {
     next(new HttpError(error.message, 500));
   }
