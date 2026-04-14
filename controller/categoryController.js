@@ -37,8 +37,10 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
   try {
-    const { id } = req.params.id;
+    const { id } = req.params;
 
+    // console.log("id", id);
+    
     const category = await Category.findById(id);
 
     if (!category) {
@@ -55,9 +57,9 @@ const getById = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
-    const { id } = req.params.id;
+    const { id } = req.params;
 
-    let category = Category.findById(id);
+    let category = await Category.findById(id);
 
     if (!category) {
       return next(new HttpError("category not found", 404));
@@ -78,7 +80,7 @@ const update = async (req, res, next) => {
     }
 
     if (req.body.name && req.body.name !== category.name) {
-      const existingCategory = Category.findOne({ name: req.body.name });
+      const existingCategory = await Category.findOne({ name: req.body.name });
       if (existingCategory) {
         return next(new HttpError("category name already exists", 400));
       }
@@ -102,7 +104,7 @@ const update = async (req, res, next) => {
 
 const deleteCategory = async (req, res, next) => {
   try {
-    const { id } = req.params.id;
+    const { id } = req.params;
 
     const category = await Category.findById(id);
 

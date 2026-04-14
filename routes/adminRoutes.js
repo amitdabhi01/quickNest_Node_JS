@@ -2,14 +2,20 @@ import express from "express";
 
 import auth from "../middleware/auth.js";
 import checkRole from "../middleware/checkRole.js";
+import validate from "../middleware/validate.js";
 
 import adminController from "../controller/adminController.js";
 import categoryController from "../controller/categoryController.js";
 import serviceController from "../controller/serviceController.js";
 
-import validate from "../middleware/validate.js";
+import {
+  createCategorySchema,
+  updateCategorySchema,
+} from "../validation/categorySchema.js";
 
-import { createCategorySchema } from "../validation/categorySchema.js";
+import { updateUserSchema } from "../validation/userSchema.js";
+
+import { createServiceSchema } from "../validation/serviceSchema.js";
 
 const router = express.Router();
 
@@ -18,6 +24,7 @@ router.patch(
   "/update/:id",
   auth,
   checkRole("admin", "super_admin"),
+  validate(updateUserSchema),
   adminController.updateUserData,
 );
 
@@ -54,6 +61,7 @@ router.get(
 router.patch(
   "/category/:id",
   auth,
+  validate(updateCategorySchema),
   checkRole("admin", "super_admin"),
   categoryController.update,
 );
@@ -70,6 +78,7 @@ router.post(
   "/addService",
   auth,
   checkRole("admin", "super_admin"),
+  validate(createServiceSchema),
   serviceController.add,
 );
 
