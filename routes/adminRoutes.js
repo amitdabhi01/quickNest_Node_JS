@@ -15,7 +15,10 @@ import {
 
 import { updateUserSchema } from "../validation/userSchema.js";
 
-import { createServiceSchema } from "../validation/serviceSchema.js";
+import {
+  createServiceSchema,
+  updateServiceSchema,
+} from "../validation/serviceSchema.js";
 
 const router = express.Router();
 
@@ -80,6 +83,35 @@ router.post(
   checkRole("admin", "super_admin"),
   validate(createServiceSchema),
   serviceController.add,
+);
+
+router.get(
+  "/allServices",
+  auth,
+  checkRole("admin", "super_admin"),
+  serviceController.getAll,
+);
+
+router.get(
+  "/service/:id",
+  auth,
+  checkRole("admin", "super_admin"),
+  serviceController.getById,
+);
+
+router.patch(
+  "/service/:id",
+  auth,
+  checkRole("admin", "super_admin"),
+  validate(updateServiceSchema),
+  serviceController.update,
+);
+
+router.delete(
+  "/service/:id",
+  auth,
+  checkRole("admin", "super_admin"),
+  serviceController.deleteService,
 );
 
 export default router;
