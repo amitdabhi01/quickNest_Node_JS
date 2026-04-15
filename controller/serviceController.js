@@ -1,3 +1,4 @@
+import { json } from "express";
 import HttpError from "../middleware/HttpError.js";
 
 import Category from "../model/Category.js";
@@ -122,10 +123,32 @@ const update = async (req, res, next) => {
 
     await service.save();
 
-    res.status(200)
+    res
+      .status(200)
+      .json({ success: true, message: "service update successfully", service });
   } catch (error) {
     next(new HttpError(error.message, 500));
   }
 };
 
-export default { add, getAll, getById };
+const deleteService = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const service = await Service.findById(id);
+
+    if (!service) {
+      return next(new HttpError("service not found", 404));
+    }
+
+    await Service.findByIdAndDelete(id);
+
+    res
+      .status(200)
+      .json({ success: true, message: "service deleted successfully" });
+  } catch (error) {
+    next(new HttpError(error.message, 500));
+  }
+};
+
+export default { add, getAll, getById, update, deleteService };
