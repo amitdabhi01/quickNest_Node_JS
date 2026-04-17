@@ -113,4 +113,6 @@ const getAllBookings = async (req, res, next) => {
   }
 };
 
+const 
+
 export default { createBooking, getAllBookings };
