@@ -3,8 +3,10 @@ import dotenv from "dotenv";
 
 import connectDB from "./config/db.js";
 import HttpError from "./middleware/HttpError.js";
+
 import userRoutes from "./routes/userRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import bookingRoutes from "./routes/bookingRoutes.js";
 
 dotenv.config({ path: "./.env" });
 
@@ -15,6 +17,8 @@ app.use(express.json());
 app.use("/user", userRoutes);
 
 app.use("/admin", adminRoutes);
+
+app.use("/booking", bookingRoutes);
 
 app.get("/", (req, res) => {
   res.status(200).json("Hello From Server");
