@@ -64,16 +64,53 @@ const createBooking = async (req, res, next) => {
       },
     ]);
 
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "service booked successfully",
-        newBooking,
-      });
+    res.status(201).json({
+      success: true,
+      message: "service booked successfully",
+      newBooking,
+    });
   } catch (error) {
     next(new HttpError(error.message, 500));
   }
 };
 
-export default { createBooking };
+const getAllBookings = async (req, res, next) => {
+  try {
+    let bookings;
+
+    let role = req.user.role;
+
+    if (role === "admin" || role === "super_admin") {
+      bookings = await Booking.find({}).populate([
+        { path: "serviceId", select: "name price description duration" },
+        {
+          path: "userId",
+          select: "name email phone",
+        },
+      ]);
+    } else if (role === "customer") {
+      bookings = await Booking.find({ userId: req.user._id }).populate(
+        "serviceId",
+        "name price duration",
+      );
+    } else {
+      return next(new HttpError("unauthorized access", 401));
+    }
+
+    if (bookings.length === 0) {
+      return res
+        .status(200)
+        .json({ success: true, message: "no booking data found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "all booking fetched successfully",
+      bookings,
+    });
+  } catch (error) {
+    next(new HttpError(error.message, 500));
+  }
+};
+
+export default { createBooking, getAllBookings };

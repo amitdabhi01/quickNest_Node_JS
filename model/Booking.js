@@ -1,4 +1,3 @@
-import { required, types } from "joi";
 import mongoose from "mongoose";
 
 const bookingSchema = new mongoose.Schema(
