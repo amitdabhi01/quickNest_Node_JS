@@ -7,6 +7,7 @@ import HttpError from "./middleware/HttpError.js";
 import userRoutes from "./routes/userRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
+import providerRoutes from "./routes/providerRoutes.js";
 
 dotenv.config({ path: "./.env" });
 
@@ -19,6 +20,8 @@ app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 
 app.use("/booking", bookingRoutes);
+
+app.use("/provider", providerRoutes);
 
 app.get("/", (req, res) => {
   res.status(200).json("Hello From Server");
