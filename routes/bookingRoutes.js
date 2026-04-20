@@ -34,7 +34,7 @@ router.get(
 router.get("/timeSlots", auth, bookingController.availableTimeSlot);
 
 // confirm booking
-router.patch(
+router.patch(       
   "/confirm/:id",
   auth,
   checkRole("admin", "super_admin"),
