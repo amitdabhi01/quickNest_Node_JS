@@ -242,7 +242,11 @@ const availableTimeSlots = async (req, res, next) => {
   try {
     const { serviceId, bookingDate } = req.query;
 
+    // console.log("Query:", req.query);
+
     const service = await Service.findById(serviceId);
+
+      // console.log("service", service);
 
     if (!service) {
       return next(new HttpError("Service not found with the provided ID", 404));
