@@ -43,17 +43,50 @@ const registerAsProvider = async (req, res, next) => {
 
     await newProvider.save();
 
-    res
-      .status(201)
-      .json({
-        success: true,
-        message:
-          "Registered as provider successfully. Wait for admin verification",
-        provider: newProvider,
-      });
+    res.status(201).json({
+      success: true,
+      message:
+        "Registered as provider successfully. Wait for admin verification",
+      provider: newProvider,
+    });
   } catch (error) {
     next(new HttpError(error.message, 500));
   }
 };
 
-export default { registerAsProvider };
+const getProviders = async () => {
+  try {
+    const { isVerified } = req.query;
+
+    let query = {};
+
+    if (isVerified !== undefined) {
+      query.isVerified = isVerified === "true";
+    }
+
+    const providers = await Provider.find(query)
+      .populate({
+        path: "userId",
+        select: "name email phone",
+      })
+      .populate({
+        path: "services",
+        select: "name",
+      });
+
+    if (!providers.length) {
+      return next(new HttpError("no provider found", 404));
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "providers details fetched successfully",
+      count: providers.length,
+      providers,
+    });
+  } catch (error) {
+    next(new HttpError(error.message, 500));
+  }
+};
+
+export default { registerAsProvider, getProviders };
