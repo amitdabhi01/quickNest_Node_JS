@@ -2,19 +2,16 @@ import transporter from "../config/email.js";
 
 const sendEmail = async ({ to, subject, text, html }) => {
   try {
-    const mailOptions = {
-      form: `"QuickNest" <${process.env.SMTP_USER}>`,
+    const info = await transporter.sendMail({
+      from: 'Quick Nest "amitdabhi526@gmail.com"',
       to,
       subject,
-      text,
       html,
-    };
+    });
 
-    const info = await transporter.sendMail(mailOptions);
-
-    return info;
+    console.log("email sent id", info.messageId);
   } catch (error) {
-    throw new Error("Email send fail" + error.message);
+    console.log(error.message);
   }
 };
 
