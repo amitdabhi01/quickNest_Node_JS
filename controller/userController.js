@@ -3,6 +3,8 @@ import HttpError from "../middleware/HttpError.js";
 import uploads from "../middleware/upload.js";
 import User from "../model/User.js";
 
+import { getWelcomeEmailTemplate } from "../services/emailTemplete.js";
+
 const add = async (req, res, next) => {
   try {
     const { name, email, password, phone, role } = req.body;
@@ -22,6 +24,12 @@ const add = async (req, res, next) => {
     const user = new User(newUser);
 
     await user.save();
+
+    sendEmail({
+      to: newUser.email,
+      subject: "Welcome to QuickNest",
+      html: getWelcomeEmailTemplate(newUser.name),
+    });
 
     res.status(201).json({ success: true, user });
   } catch (error) {
@@ -65,7 +73,7 @@ const authLogin = async (req, res, next) => {
 
 const logOut = async (req, res, next) => {
   try {
-    const token = req.token; 
+    const token = req.token;
 
     req.user.tokens = req.user.tokens.filter((t) => {
       return t.token !== token;

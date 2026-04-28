@@ -253,8 +253,8 @@ export const getWelcomeEmailTemplate = (userName) => {
           <p>You received this email because you created an account on QuickNest</p>
           
           <div class="social-links">
-            <a href="#">Terms of Service</a> | 
-            <a href="#">Privacy Policy</a> | 
+            <a href="#">Terms of Service</a> |
+            <a href="#">Privacy Policy</a> |
             <a href="#">Contact Us</a>
           </div>
 
