@@ -7,6 +7,7 @@ import validate from "../middleware/validate.js";
 import adminController from "../controller/adminController.js";
 import categoryController from "../controller/categoryController.js";
 import serviceController from "../controller/serviceController.js";
+import userController from "../controller/userController.js";
 
 import {
   createCategorySchema,
@@ -23,6 +24,13 @@ import {
 const router = express.Router();
 
 // ==================== USERS ROUTES ====================
+
+router.get(
+  "/getAll",
+  auth,
+  checkRole("admin", "super_admin", userController.getAll),
+);
+
 router.patch(
   "/update/:id",
   auth,

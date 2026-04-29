@@ -122,55 +122,87 @@ const getAll = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
-    const user = req.user;
+    let targetUser = req.params.id || req.user._id;
+
+    const user = await User.findById(targetUser);
 
     if (!user) {
-      return next(new HttpError("user not found", 404));
+      return next(new HttpError("User not found", 404));
     }
 
-    const updates = Object.keys(req.body);
+    const update = Object.keys(req.body);
 
-    const allowedField = ["name", "password", "phone"];
+    let allowedFields = ["name", "password", "phone", "profilePic"];
 
-    const isValid = updates.every((field) => allowedField.includes(field));
+    if (req.user.role === "admin" || req.user.role === "super_admin") {
+      allowedFields = [...allowedFields, "role", "isVerified"];
+    }
+
+    const isValid = update.every((filed) => allowedFields.includes(filed));
 
     if (!isValid) {
-      return next(new HttpError("only allowed fields can be updated", 400));
+      return next(new HttpError("Only allowed fields can be updated", 400));
     }
 
-    uploads.forEach((update) => (user[update] = req.body[update]));
+    if (
+      !role.user.role === "admin" &&
+      !req.user.role === "super_admin" &&
+      !req.user.user._id.toString() !== user._id.toString()
+    ) {
+      return next(new HttpError("Unauthorized Access", 401));
+    }
+
+    update.forEach((update) => (user[update] = req.body[update]));
 
     if (req.file) {
-      await cloudinary.uploader.destroy(user.cloudinaryId);
+      if (user.cloudinaryId) {
+        await cloudinary.destroy(user.cloudinaryId);
+      }
 
       user.profilePic = req.file.path;
 
-      user.cloudinaryId = req.file.filename;
+      user.cloudinaryId = req.file.path;
     }
 
     await user.save();
 
     res
       .status(200)
-      .json({ success: true, message: "user update successfully", user });
+      .json({ success: true, message: "User updated successfully", user });
   } catch (error) {
-    next(new HttpError(error.message, 404));
+    next(new HttpError(error.message, 500));
   }
 };
 
 const deleteUser = async (req, res, next) => {
   try {
-    const user = req.user;
+    const targetUser = req.params.id || req.user._id;
+
+    const user = await User.findById(targetUser);
+
+    if (!user) {
+      return next(new HttpError("User not found", 404));
+    }
+
+    if (
+      !req.user.role === "admin" &&
+      !req.user.role === "super_admin" &&
+      !req.user._id.toString() !== user._id.toString()
+    ) {
+      return next(new HttpError("Unauthorized Access", 401));
+    }
 
     await User.deleteOne(user);
 
-    await cloudinary.uploader.destroy(user.cloudinaryId);
+    if (user.cloudinaryId) {
+      await cloudinary.uploader.destroy(user.cloudinaryId);
+    }
 
     res
       .status(200)
-      .json({ success: true, message: "user delete successfully" });
+      .json({ success: true, message: "User deleted successfully" });
   } catch (error) {
-    next(new HttpError(error.message, 500));
+    return next(new HttpError(error.message, 500));
   }
 };
 
