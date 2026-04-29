@@ -268,4 +268,81 @@ export const getWelcomeEmailTemplate = (userName) => {
   `;
 };
 
-export default { getWelcomeEmailTemplate };
+export const getBookingConfirmationEmailTemplate = (
+  userName,
+  serviceName,
+  bookingDate,
+  timeSlot,
+) => {
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body{
+font-family:'Segoe UI';
+background:#f4f4f4;
+}
+.email-container{
+max-width:600px;
+margin:20px auto;
+background:#fff;
+border-radius:8px;
+overflow:hidden;
+}
+.header{
+background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+padding:40px;
+color:white;
+text-align:center;
+}
+.content{
+padding:40px 30px;
+}
+.features{
+background:#f8f9fa;
+padding:25px;
+border-radius:6px;
+margin:20px 0;
+}
+.footer{
+background:#f8f9fa;
+padding:25px;
+text-align:center;
+font-size:12px;
+}
+</style>
+</head>
+<body>
+
+<div class="email-container">
+
+<div class="header">
+<h1>✅ Booking Confirmed</h1>
+</div>
+
+<div class="content">
+
+<p>Hi <strong>${userName}</strong>,</p>
+
+<div class="features">
+<p>Service: ${serviceName}</p>
+<p>Date: ${bookingDate}</p>
+<p>Time: ${timeSlot}</p>
+</div>
+
+</div>
+
+<div class="footer">
+Thank you for choosing QuickNest
+</div>
+
+</div>
+
+</body>
+</html>
+`;
+};
+
+export default { getWelcomeEmailTemplate, getBookingConfirmationEmailTemplate };

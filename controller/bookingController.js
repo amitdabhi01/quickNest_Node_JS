@@ -3,6 +3,9 @@ import HttpError from "../middleware/HttpError.js";
 import Booking from "../model/Booking.js";
 import Service from "../model/Service.js";
 
+import sendEmail from "../utils/sendEmail.js";
+import { getBookingConfirmationEmailTemplate } from "../services/emailTemplate.js";
+
 // CREATE BOOKING
 const createBooking = async (req, res, next) => {
   try {
@@ -68,7 +71,18 @@ const createBooking = async (req, res, next) => {
       },
     ]);
 
-    res.status(201).json({
+    await sendEmail({
+      to: newBooking.userId.email,
+      subject: "Booking Confirmation",
+      html: getBookingConfirmationEmailTemplate(
+        newBooking.userId.name,
+        newBooking.serviceId.name,
+        bookingDate,
+        timeSlot,
+      ),
+    });
+
+    await await res.status(201).json({
       success: true,
       message: "Booking created successfully",
       newBooking,
@@ -246,7 +260,7 @@ const availableTimeSlots = async (req, res, next) => {
 
     const service = await Service.findById(serviceId);
 
-      // console.log("service", service);
+    // console.log("service", service);
 
     if (!service) {
       return next(new HttpError("Service not found with the provided ID", 404));
@@ -301,7 +315,7 @@ const availableTimeSlots = async (req, res, next) => {
 // CONFIRM BOOKING
 const confirmBooking = async (req, res, next) => {
   try {
-    const  id = req.params.id;
+    const id = req.params.id;
 
     const booking = await Booking.findById(id);
 
@@ -334,7 +348,7 @@ const confirmBooking = async (req, res, next) => {
 // CANCEL BOOKING
 const cancelledBooking = async (req, res, next) => {
   try {
-    const id  = req.params.id;
+    const id = req.params.id;
 
     const booking = await Booking.findById(id);
 
@@ -367,7 +381,7 @@ const cancelledBooking = async (req, res, next) => {
 // COMPLETE BOOKING
 const completeBooking = async (req, res, next) => {
   try {
-    const id  = req.params.id;
+    const id = req.params.id;
 
     const booking = await Booking.findById(id);
 
@@ -380,7 +394,9 @@ const completeBooking = async (req, res, next) => {
     }
 
     if (booking.status === "cancelled") {
-      return next(new HttpError("cancelled booking can not bot be completed", 400));
+      return next(
+        new HttpError("cancelled booking can not bot be completed", 400),
+      );
     }
 
     booking.status = "completed";
