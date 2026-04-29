@@ -1,9 +1,13 @@
 import cloudinary from "../config/cloudinary.js";
+
 import HttpError from "../middleware/HttpError.js";
 import uploads from "../middleware/upload.js";
+
 import User from "../model/User.js";
 
-import { getWelcomeEmailTemplate } from "../services/emailTemplete.js";
+import sendEmail from "../utils/sendEmail.js";
+import { getWelcomeEmailTemplate } from "../services/emailTemplate.js";
+
 
 const add = async (req, res, next) => {
   try {
