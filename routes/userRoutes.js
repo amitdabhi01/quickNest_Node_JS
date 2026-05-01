@@ -2,15 +2,17 @@ import express from "express";
 
 import userController from "../controller/userController.js";
 
-import validate from "../middleware/validate.js";
-import auth from "../middleware/auth.js";
-import uploads from "../middleware/upload.js";
 import checkRole from "../middleware/checkRole.js";
+import auth from "../middleware/auth.js";
+import validate from "../middleware/validate.js";
+import uploads from "../middleware/upload.js";
+
 import {
   createUserSchema,
   updateUserSchema,
 } from "../validation/userSchema.js";
 
+import { authLimiter } from "../middleware/rateLimit.js";
 
 const router = express.Router();
 
@@ -23,7 +25,7 @@ router.post(
 
 router.post("/login", userController.login);
 
-router.get("/authLogin", auth, userController.authLogin);
+router.get("/authLogin", auth, authLimiter, userController.authLogin);
 
 router.post("/logOut", auth, userController.logOut);
 
