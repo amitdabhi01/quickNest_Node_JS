@@ -345,4 +345,91 @@ Thank you for choosing QuickNest
 `;
 };
 
-export default { getWelcomeEmailTemplate, getBookingConfirmationEmailTemplate };
+export const getProviderRegistrationEmailTemplate = (
+  userName,
+  serviceName,
+  experience,
+  document,
+) => {
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body{
+font-family:'Segoe UI';
+background:#f4f4f4;
+}
+.email-container{
+max-width:600px;
+margin:20px auto;
+background:#fff;
+border-radius:8px;
+overflow:hidden;
+}
+.header{
+background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+padding:40px;
+color:white;
+text-align:center;
+}
+.content{
+padding:40px 30px;
+color:#555;
+}
+.features{
+background:#f8f9fa;
+padding:25px;
+border-radius:6px;
+margin:20px 0;
+}
+.footer{
+background:#f8f9fa;
+padding:25px;
+text-align:center;
+font-size:12px;
+}
+</style>
+</head>
+<body>
+
+<div class="email-container">
+
+<div class="header">
+<h1>🛠 Provider Registration Submitted</h1>
+</div>
+
+<div class="content">
+
+<p>Hi <strong>${userName}</strong>,</p>
+
+<p>Your provider registration request has been received successfully.</p>
+
+<div class="features">
+<p><strong>Service:</strong> ${serviceName}</p>
+<p><strong>Experience:</strong> ${experience} Years</p>
+<p><strong>Document:</strong> ${document}</p>
+<p><strong>Status:</strong> Pending Verification</p>
+</div>
+
+<p>Our team will review your details and verify your application soon.</p>
+
+</div>
+
+<div class="footer">
+Thank you for joining QuickNest as Provider
+</div>
+
+</div>
+
+</body>
+</html>
+`;
+};
+
+export default {
+  getWelcomeEmailTemplate,
+  getBookingConfirmationEmailTemplate,
+  getProviderRegistrationEmailTemplate,
+};
