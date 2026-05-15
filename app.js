@@ -1,8 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
+import helmet from "helmet";
 
 import connectDB from "./config/db.js";
-
 import HttpError from "./middleware/HttpError.js";
 
 import userRoutes from "./routes/userRoutes.js";
@@ -15,6 +15,7 @@ dotenv.config({ path: "./.env" });
 const app = express();
 
 app.use(express.json());
+app.use(helmet());
 
 app.use("/user", userRoutes);
 
